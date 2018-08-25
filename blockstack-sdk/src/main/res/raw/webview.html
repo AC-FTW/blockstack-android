@@ -84,6 +84,12 @@ function putFile(path, content, options, uniqueIdentifier, isBinary) {
   })
 }
 
+function getPublicKeyFromPrivate(privateKey) {
+  console.log('AC: getPublicKeyFromPrivate')
+
+  return blockstack.getPublicKeyFromPrivate(privateKey)
+}
+
 function encryptContent(content, options, isBinary) {
   console.log('encryptContent')
   if (isBinary) {

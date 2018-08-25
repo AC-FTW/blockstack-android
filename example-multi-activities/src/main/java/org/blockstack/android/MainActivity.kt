@@ -19,7 +19,8 @@ import org.jetbrains.anko.coroutines.experimental.bg
 import java.net.URL
 
 
-class MainActivity : AppCompatActivity() {
+class
+  MainActivity : AppCompatActivity() {
     private val TAG = MainActivity::class.java.simpleName
 
     private var _blockstackSession: BlockstackSession? = null
@@ -60,6 +61,11 @@ class MainActivity : AppCompatActivity() {
     private fun onSignIn(userData: UserData) {
         userDataTextView.text = "Signed in as ${userData.profile?.name} (${userData.decentralizedID}) with ${userData.profile?.email}"
         showUserAvatar(userData.profile?.avatarImage)
+//        val priKey = userData.appPrivateKey
+//        blockstackSession().getPublicKeyFromPrivateKey(priKey) {result ->
+//            if (result != null) {
+//            }
+//        }
     }
 
     private fun showUserAvatar(avatarImage: String?) {

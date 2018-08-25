@@ -264,6 +264,25 @@ class BlockstackSession(context: Context,
 
     }
 
+	/**
+	 * Get the public key from the private key
+     * Temporary solution until this issue is resolved:
+     *   - https://github.com/blockstack/blockstack.js/issues/458
+	 *
+	 */
+	fun getPublicKeyFromPrivateKey(aPrivateKey: String, callback: (Result<String>) -> Unit) {
+        ensureLoaded()
+
+		val javascript = "getPublicKeyFromPrivate('$aPrivateKey')"
+        webView.evaluateJavascript(javascript) { result ->
+            if (result != null && !"null".equals(result)) {
+                callback(Result(result.removeSurrounding("\"")))
+            } else {
+                callback(Result(null, "Unable to get public key from private key."))
+            }
+        }
+	}
+
     /**
      * Encrypt content
      *
