@@ -2,7 +2,9 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'org.jetbrains.dokka-android'
 
-group = 'com.github.blockstack'
+//group = 'com.github.blockstack'
+group = 'com.github.AC-FTW'
+
 
 android {
     compileSdkVersion 27
