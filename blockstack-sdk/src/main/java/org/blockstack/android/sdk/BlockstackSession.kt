@@ -367,6 +367,7 @@ class BlockstackSession(context: Context? = null, private val config: Blockstack
 	 *
 	 */
 	fun getPublicKeyFromPrivateKey(aPrivateKey: String, callback: (Result<String>) -> Unit) {
+      println("Kotlin getPublicKeyFromPrivateKey - AC DEBUG REMOVE")
       val v8params = V8Array(v8)
                      .push(aPrivateKey)
       val result = v8blockstackAndroid.executeStringFunction("getPublicKeyFromPrivateKey", v8params)
