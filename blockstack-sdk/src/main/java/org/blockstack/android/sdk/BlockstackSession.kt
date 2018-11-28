@@ -66,7 +66,6 @@ class BlockstackSession(context: Context? = null, private val config: Blockstack
     private var getAppBucketUrlCallback: ((Result<String>) -> Unit)? = null
     private var getUserAppFileUrlCallback: ((Result<String>) -> Unit)? = null
 
-
     private val v8blockstackAndroid: V8Object
     private val v8userSessionAndroid: V8Object
     private val v8userSession: V8Object
@@ -113,7 +112,6 @@ class BlockstackSession(context: Context? = null, private val config: Blockstack
         v8android.registerJavaMethod(android, "putFileFailure", "putFileFailure", arrayOf<Class<*>>(String::class.java, String::class.java))
         v8android.registerJavaMethod(android, "getAppBucketUrlResult", "getAppBucketUrlResult", arrayOf<Class<*>>(String::class.java))
         v8android.registerJavaMethod(android, "getAppBucketUrlFailure", "getAppBucketUrlFailure", arrayOf<Class<*>>(String::class.java))
-        v8android.registerJavaMethod(android, "getUserAppFileUrlResult", "getUserAppFileUrlResult", arrayOf<Class<*>>(String::class.java))
         v8android.registerJavaMethod(android, "getUserAppFileUrlResult", "getUserAppFileUrlResult", arrayOf<Class<*>>(String::class.java))
         v8android.registerJavaMethod(android, "fetchAndroid", "fetchAndroid", arrayOf<Class<*>>(String::class.java, String::class.java, String::class.java))
         v8android.registerJavaMethod(android, "setLocation", "setLocation", arrayOf<Class<*>>(String::class.java))
@@ -365,23 +363,21 @@ class BlockstackSession(context: Context? = null, private val config: Blockstack
 
 	/**
 	 * Get the public key from the private key
-     * Temporary solution until this issue is resolved:
-     *   - https://github.com/blockstack/blockstack.js/issues/458
+   * Temporary solution until this issue is resolved:
+   *   - https://github.com/blockstack/blockstack.js/issues/458
 	 *
 	 */
 	fun getPublicKeyFromPrivateKey(aPrivateKey: String, callback: (Result<String>) -> Unit) {
-    // TODO: re-write this to use the v8 engine call to blockstack.js
+      val v8params = V8Array(v8)
+                     .push(aPrivateKey)
+      val result = v8blockstackAndroid.executeStringFunction("getPublicKeyFromPrivateKey", v8params)
+      v8params.release()
 
-//        ensureLoaded()
-//
-//		val javascript = "getPublicKeyFromPrivate('$aPrivateKey')"
-//        webView.evaluateJavascript(javascript) { result ->
-//            if (result != null && !"null".equals(result)) {
-//                callback(Result(result.removeSurrounding("\"")))
-//            } else {
-//                callback(Result(null, "Unable to get public key from private key."))
-//            }
-//        }
+      if (result != null && !"null".equals(result)) {
+          callback(Result(result.removeSurrounding("\"")))
+      } else {
+          callback(Result(null, "Unable to get public key from private key."))
+      }
 	}
     
     /* Crypto methods */
