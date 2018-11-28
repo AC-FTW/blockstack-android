@@ -2792,6 +2792,7 @@ function publicKeyToAddress(publicKey) {
 }
 
 function getPublicKeyFromPrivate(privateKey) {
+  console.log('AC DEBUG REMOVE: getPublicKeyFromPrivate(blokstack.js)')
   var keyPair = _bitcoinjsLib.ECPair.fromPrivateKey(Buffer.from(privateKey, 'hex'));
   return keyPair.publicKey.toString('hex');
 }
