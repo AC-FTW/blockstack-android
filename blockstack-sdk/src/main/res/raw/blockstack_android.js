@@ -22,6 +22,12 @@ blockstackAndroid.getAppBucketUrl = function(gaiaHubUrl, appPrivateKey) {
     })
   }
 
+// AC: adding ability to get public key from private:
+blockstackAndroid.getPublicKeyFromPrivate = function(appPrivateKey) {
+  console.log("AC DEBUG REMOVE: raw/blockstack_android::getPublicKeyFromPrivate")
+  return blockstack.getPublicKeyFromPrivate(appPrivateKey)
+}
+
 blockstackAndroid.getUserAppFileUrl = function(path, username, appOrigin) {
     blockstack.getUserAppFileUrl(path, username, appOrigin)
     .then(function(url) {
