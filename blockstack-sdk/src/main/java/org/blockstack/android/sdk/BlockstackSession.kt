@@ -370,7 +370,7 @@ class BlockstackSession(context: Context? = null, private val config: Blockstack
       println("Kotlin getPublicKeyFromPrivateKey - AC DEBUG REMOVE")
       val v8params = V8Array(v8)
                      .push(aPrivateKey)
-      val result = v8blockstackAndroid.executeStringFunction("getPublicKeyFromPrivateKey", v8params)
+      val result = v8blockstackAndroid.executeStringFunction("getPublicKeyFromPrivate", v8params)
       v8params.release()
 
       if (result != null && !"null".equals(result)) {
