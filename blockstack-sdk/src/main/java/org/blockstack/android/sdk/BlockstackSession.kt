@@ -339,7 +339,6 @@ class BlockstackSession(context: Context? = null, private val config: Blockstack
     fun putFile(path: String, content: Any, options: PutFileOptions, callback: (Result<String>) -> Unit) {
         Log.d(TAG, "putFile: path: ${path} options: ${options}")
 
-
         val valid = content is String || content is ByteArray
         if (!valid) {
             throw IllegalArgumentException("putFile content only supports String or ByteArray")
@@ -356,6 +355,7 @@ class BlockstackSession(context: Context? = null, private val config: Blockstack
             v8params = V8Array(v8).push(path).push(content).push(options.toJSON().toString()).push(uniqueIdentifier).push(false)
         }
 
+        Log.d("BlockstackSession", "DEBUG(BlockstackSession::putFile): executing void fn putFile with path: ${path} options: ${options}")
         v8userSessionAndroid.executeVoidFunction("putFile", v8params)
         v8params.release()
 
@@ -563,11 +563,13 @@ class BlockstackSession(context: Context? = null, private val config: Blockstack
         }
 
         fun putFileResult(readURL: String, uniqueIdentifier: String) {
+            Log.d("BlockstackSession", "DEBUG(BlockstackSession::putFileResult): executing callback for void fn putFile with readURL: ${readURL}")
             blockstackSession.putFileCallbacks[uniqueIdentifier]?.invoke(Result(readURL))
             blockstackSession.putFileCallbacks.remove(uniqueIdentifier)
         }
 
         fun putFileFailure(error: String, uniqueIdentifier: String) {
+            Log.d("BlockstackSession", "DEBUG(BlockstackSession::putFileFailure): executing callback for void fn putFile with error: ${error}")
             blockstackSession.putFileCallbacks[uniqueIdentifier]?.invoke(Result(null, error))
             blockstackSession.putFileCallbacks.remove(uniqueIdentifier)
         }
