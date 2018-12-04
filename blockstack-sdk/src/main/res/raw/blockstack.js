@@ -8206,10 +8206,13 @@ function connectToGaiaHub(gaiaHubUrl, challengeSignerHex) {
  * @private
  * @returns {Promise} that resolves to the new gaia hub connection
  */
-function setLocalGaiaHubConnection(caller) {
+function setLocalGaiaHubConnection(caller, path='') {
+  console.log(`DEBUG(blockstack.js::setLocalGaiaHubConnection): called (path = ${path}).`)
+
   var userData = caller.loadUserData();
 
   if (!userData) {
+    console.log(`DEBUG(blockstack.js::setLocalGaiaHubConnection): throwing - missing userdata (path = ${path}).`)
     throw new _errors.InvalidStateError('Missing userData');
   }
 
@@ -8217,22 +8220,28 @@ function setLocalGaiaHubConnection(caller) {
     userData.hubUrl = _authConstants.BLOCKSTACK_DEFAULT_GAIA_HUB_URL;
   }
 
+  console.log(`DEBUG(blockstack.js::setLocalGaiaHubConnection): returing call to connectToGaiaHub (path = ${path}).`)
   return connectToGaiaHub(userData.hubUrl, userData.appPrivateKey).then(function (gaiaConfig) {
+    console.log(`DEBUG(blockstack.js::setLocalGaiaHubConnection): in then for connectToGaiaHub result (path = ${path}).`)
     userData.gaiaHubConfig = gaiaConfig;
     return gaiaConfig;
   });
 }
 
-function getOrSetLocalGaiaHubConnection(caller) {
+function getOrSetLocalGaiaHubConnection(caller, path='') {
+  console.log(`DEBUG(blockstack.js::getOrSetLocalGaiaHubConnection): calling with ${path}`)
   var userData = caller.store.getSessionData().userData;
   if (!userData) {
+    console.log(`DEBUG(blockstack.js::getOrSetLocalGaiaHubConnection): throwing--missing userdata`)
     throw new _errors.InvalidStateError('Missing userData');
   }
   var hubConfig = userData.gaiaHubConfig;
   if (hubConfig) {
+    console.log(`DEBUG(blockstack.js::getOrSetLocalGaiaHubConnection): resolving with known hubConfig from userdata (path = ${path}).`)
     return Promise.resolve(hubConfig);
   }
-  return setLocalGaiaHubConnection(caller);
+  console.log(`DEBUG(blockstack.js::getOrSetLocalGaiaHubConnection): returning call to setLocalGaiaHubConnection (path = ${path}).`)
+  return setLocalGaiaHubConnection(caller, path);
 }
 
 function getBucketUrl(gaiaHubUrl, appPrivateKey) {
@@ -8679,7 +8688,7 @@ function putFileImpl(caller, path, content, options) {
   }
   
   console.log(`DEBUG(blockstack.js::putFileImpl): calling getOrSetLocalGaiaHubConnection for ${path}`)
-  return (0, _hub.getOrSetLocalGaiaHubConnection)(caller)
+  return (0, _hub.getOrSetLocalGaiaHubConnection)(caller, path)
     .then(function (gaiaHubConfig) {
       console.log(`DEBUG(blockstack.js::putFileImpl): calling uploadToGaiaHub for ${path}`)
       return (0, _hub.uploadToGaiaHub)(path, content, gaiaHubConfig, contentType);
