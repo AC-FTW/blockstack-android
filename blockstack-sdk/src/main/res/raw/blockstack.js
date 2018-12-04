@@ -1815,6 +1815,7 @@ var UserSession = exports.UserSession = function () {
   }, {
     key: 'putFile',
     value: function putFile(path, content, options) {
+      console.log(`DEBUG(blockstack.js::putFile): called on ${path}`)
       return (0, _storage.putFileImpl)(this, path, content, options);
     }
 
@@ -8115,6 +8116,7 @@ function uploadToGaiaHub(filename, contents, hubConfig) {
   var contentType = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'application/octet-stream';
 
   _logger.Logger.debug('uploadToGaiaHub: uploading ' + filename + ' to ' + hubConfig.server);
+  console.log(`DEBUG(blockstack.js::uploadToGaiaHub): calling fetch for ${filename}`)
   return fetch(hubConfig.server + '/store/' + hubConfig.address + '/' + filename, {
     method: 'POST',
     headers: {
@@ -8123,10 +8125,13 @@ function uploadToGaiaHub(filename, contents, hubConfig) {
     },
     body: contents
   }).then(function (response) {
+    console.log(`DEBUG(blockstack.js::uploadToGaiaHub): fetch for ${filename} returning(1)`)
     return response.text();
   }).then(function (responseText) {
+    console.log(`DEBUG(blockstack.js::uploadToGaiaHub): fetch for ${filename} returning(2)`)
     return JSON.parse(responseText);
   }).then(function (responseJSON) {
+    console.log(`DEBUG(blockstack.js::uploadToGaiaHub): fetch for ${filename} returning(3) ${responseJSON.publicURL}`)
     return responseJSON.publicURL;
   });
 }
@@ -8608,6 +8613,7 @@ function getFileImpl(caller, path, options) {
  * @private
  */
 function putFileImpl(caller, path, content, options) {
+  console.log(`DEBUG(blockstack.js::putFileImpl): called on ${path}`)
   var defaults = {
     encrypt: true,
     sign: false
@@ -8671,9 +8677,13 @@ function putFileImpl(caller, path, content, options) {
     content = JSON.stringify(signedCipherObject);
     contentType = 'application/json';
   }
-  return (0, _hub.getOrSetLocalGaiaHubConnection)(caller).then(function (gaiaHubConfig) {
-    return (0, _hub.uploadToGaiaHub)(path, content, gaiaHubConfig, contentType);
-  });
+  
+  console.log(`DEBUG(blockstack.js::putFileImpl): calling getOrSetLocalGaiaHubConnection for ${path}`)
+  return (0, _hub.getOrSetLocalGaiaHubConnection)(caller)
+    .then(function (gaiaHubConfig) {
+      console.log(`DEBUG(blockstack.js::putFileImpl): calling uploadToGaiaHub for ${path}`)
+      return (0, _hub.uploadToGaiaHub)(path, content, gaiaHubConfig, contentType);
+    });
 }
 
 /**

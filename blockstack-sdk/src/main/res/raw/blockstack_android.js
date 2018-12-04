@@ -86,16 +86,20 @@ userSessionAndroid.getFile = function(path, options, uniqueIdentifier) {
 }
 
 userSessionAndroid.putFile = function(path, contentString, options, uniqueIdentifier, binary) {
+  var method = 'blockstack_android::putFile'
   var content = null;
   if (binary) {
     content = Base64.decode(contentString)
   } else {
     content = contentString
   }
+  console.log(`DEBUG(${method}): calling userSession.putfile with ${path}`)
   userSession.putFile(path, content, JSON.parse(options))
     .then(function(result) {
+      console.log(`DEBUG(${method}): calling userSession.putfile result callback with ${result}`)
       android.putFileResult(result, uniqueIdentifier)
     }, function(error) {
+      console.log(`DEBUG(${method}): calling userSession.putfile failure callback with ${error.toString()}`)
       console.log("put failure:" + error)
       android.putFileFailure(error.toString(), uniqueIdentifier)
     })
