@@ -355,7 +355,6 @@ class BlockstackSession(context: Context? = null, private val config: Blockstack
             v8params = V8Array(v8).push(path).push(content).push(options.toJSON().toString()).push(uniqueIdentifier).push(false)
         }
 
-        Log.d("BlockstackSession", "DEBUG(BlockstackSession::putFile): executing void fn putFile with path: ${path} options: ${options}")
         v8userSessionAndroid.executeVoidFunction("putFile", v8params)
         v8params.release()
 
@@ -368,7 +367,6 @@ class BlockstackSession(context: Context? = null, private val config: Blockstack
 	 *
 	 */
 	fun getPublicKeyFromPrivateKey(aPrivateKey: String, callback: (Result<String>) -> Unit) {
-      println("Kotlin getPublicKeyFromPrivateKey - AC DEBUG REMOVE")
       val v8params = V8Array(v8)
                      .push(aPrivateKey)
       val result = v8blockstackAndroid.executeStringFunction("getPublicKeyFromPrivate", v8params)
@@ -563,13 +561,11 @@ class BlockstackSession(context: Context? = null, private val config: Blockstack
         }
 
         fun putFileResult(readURL: String, uniqueIdentifier: String) {
-            Log.d("BlockstackSession", "DEBUG(BlockstackSession::putFileResult): executing callback for void fn putFile with readURL: ${readURL}")
             blockstackSession.putFileCallbacks[uniqueIdentifier]?.invoke(Result(readURL))
             blockstackSession.putFileCallbacks.remove(uniqueIdentifier)
         }
 
         fun putFileFailure(error: String, uniqueIdentifier: String) {
-            Log.d("BlockstackSession", "DEBUG(BlockstackSession::putFileFailure): executing callback for void fn putFile with error: ${error}")
             blockstackSession.putFileCallbacks[uniqueIdentifier]?.invoke(Result(null, error))
             blockstackSession.putFileCallbacks.remove(uniqueIdentifier)
         }
